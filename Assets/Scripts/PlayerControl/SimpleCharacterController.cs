@@ -41,9 +41,6 @@ namespace PlayerControl
         [SerializeField] private float _fallGravityMultiplier = 4f;
         [SerializeField] private float _lowJumpMultiplier = 2f;
 
-        [Header("Bonus Check")] [SerializeField]
-        private float _bonusCooldownTime = 0.3f;
-
         [Header("Ground Check")] [SerializeField]
         private LayerMask _groundLayerMask;
 
@@ -69,11 +66,13 @@ namespace PlayerControl
         private bool _jumpReleased = true;
 
         private float _lastBonusEffectTriggeredTime;
+        private float _radius;
 
 
         private void Start()
         {
             _inputReader.onJumpPerformed += OnJump;
+            _radius = _controller.radius;
         }
 
         private void Update()
@@ -227,7 +226,7 @@ namespace PlayerControl
                 _controller.transform.position.z
             );
 
-            _isGrounded = Physics.CheckSphere(spherePosition, _controller.radius, _groundLayerMask,
+            _isGrounded = Physics.CheckSphere(spherePosition, _radius, _groundLayerMask,
                 QueryTriggerInteraction.Ignore);
 
             if (_isGrounded)
@@ -264,6 +263,7 @@ namespace PlayerControl
             _moveDirection = Vector3.zero;
             _currentHorizontalSpeed = 0;
             _speed2D = 0f;
+            
         }
     }
 }

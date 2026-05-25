@@ -1020,6 +1020,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BonusObjectComponent
   _playerTag: Player
   _numberMeshPrefab: {fileID: 9098722209800167037, guid: 1555bfd90fda0864e82e7bf0a36500f9, type: 3}
+  _impulseSource: {fileID: 1374530258}
   _duration: 0.15
   _strength: 0.15
   _vibrato: 20
@@ -1168,6 +1169,7 @@ GameObject:
   - component: {fileID: 1374530256}
   - component: {fileID: 1374530255}
   - component: {fileID: 1374530257}
+  - component: {fileID: 1374530258}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -1252,6 +1254,59 @@ MonoBehaviour:
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
   FollowOffset: {x: 0, y: 3.5, z: -10}
+--- !u!114 &1374530258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1374530254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseSource
+  ImpulseDefinition:
+    ImpulseChannel: 1
+    ImpulseShape: 2
+    CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    ImpulseDuration: 0.2
+    ImpulseType: 0
+    DissipationRate: 0.25
+    RawSignal: {fileID: 0}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    RepeatMode: 0
+    Randomize: 1
+    TimeEnvelope:
+      AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      AttackTime: 0
+      SustainTime: 0.2
+      DecayTime: 0.7
+      ScaleWithImpact: 1
+      HoldForever: 0
+    ImpactRadius: 100
+    DirectionMode: 0
+    DissipationMode: 2
+    DissipationDistance: 100
+    PropagationSpeed: 343
+  DefaultVelocity: {x: 0, y: -1, z: 0}
 --- !u!4 &1380927126 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3927286804991457790, guid: 00db8d12d85e34d8fb8129a15308d1e5, type: 3}
@@ -1340,7 +1395,6 @@ MonoBehaviour:
   _jumpBufferTime: 0.15
   _fallGravityMultiplier: 4
   _lowJumpMultiplier: 2
-  _bonusCooldownTime: 0.3
   _groundLayerMask:
     serializedVersion: 2
     m_Bits: 129
