@@ -46,7 +46,6 @@ namespace LevelComponents
 
         private void PlayBonus()
         {
-            Debug.Log("+1");
             _numberMeshPrefab.Spawn(transform.position);
             PlayShake();
         }

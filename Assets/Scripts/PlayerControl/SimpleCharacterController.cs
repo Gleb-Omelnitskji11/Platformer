@@ -16,38 +16,38 @@ namespace PlayerControl
         private readonly int _isStoppedHash = Animator.StringToHash("IsStopped");
         private readonly int _movementInputHeldHash = Animator.StringToHash("MovementInputHeld");
 
-        [Header("Components")] [SerializeField]
-        private InputReader _inputReader;
+        [Header("Components")]
+        [SerializeField] private InputReader _inputReader;
 
         [SerializeField] private Animator _animator;
         [SerializeField] private CharacterController _controller;
         [SerializeField] private Transform _modelTransform;
 
-        [Header("Movement Settings")] [SerializeField]
-        private float _moveSpeed = 5f;
+        [Header("Movement Settings")]
+        [SerializeField] private float _moveSpeed = 5f;
 
         [SerializeField] private float _jumpForce = 10f;
         [SerializeField] private float _gravityMultiplier = 2f;
         [SerializeField] private float _rotationSpeed = 10f;
 
-        [Header("Movement Feel")] [SerializeField]
-        private float _acceleration = 20f;
+        [Header("Movement Feel")]
+        [SerializeField] private float _acceleration = 20f;
 
         [SerializeField] private float _deceleration = 30f;
         [SerializeField] private float _airAcceleration = 10f;
 
-        [Header("Jump Feel")] [SerializeField] private float _coyoteTime = 0.15f;
+        [Header("Jump Feel")]
+        [SerializeField] private float _coyoteTime = 0.15f;
         [SerializeField] private float _jumpBufferTime = 0.15f;
         [SerializeField] private float _fallGravityMultiplier = 4f;
         [SerializeField] private float _lowJumpMultiplier = 2f;
 
-        [Header("Ground Check")] [SerializeField]
-        private LayerMask _groundLayerMask;
-
+        [Header("Ground Check")]
+        [SerializeField] private LayerMask _groundLayerMask;
         [SerializeField] private float _groundedOffset = -0.14f;
 
-        [Header("Respawn data")] [SerializeField]
-        private Vector3 _initialPosition = new Vector3(0f, 0f, 0f);
+        [Header("Respawn data")]
+        [SerializeField] private Vector3 _initialPosition = new Vector3(0f, 0f, 0f);
 
         private Vector3 _velocity;
         private bool _isGrounded = true;
@@ -62,7 +62,7 @@ namespace PlayerControl
 
         private float _currentHorizontalSpeed;
         private float _lastGroundedTime;
-        private float _lastJumpPressedTime;
+        private float _lastJumpPressedTime = -999f;
         private bool _jumpReleased = true;
 
         private float _lastBonusEffectTriggeredTime;
@@ -156,7 +156,8 @@ namespace PlayerControl
         {
             if (Time.time - _lastGroundedTime <= _coyoteTime)
             {
-                _lastJumpPressedTime = Time.time;
+                if(performed)
+                    _lastJumpPressedTime = Time.time;
                 _jumpReleased = !performed;
             }
         }
@@ -206,8 +207,10 @@ namespace PlayerControl
             {
                 if ((flags & CollisionFlags.Above) != 0)
                 {
-                    _velocity.y = 0f;
-                    _velocity.x = 0f;
+                    if (_velocity.y > 0)
+                    {
+                        _velocity.y = 0f;
+                    }
                 }
 
                 if ((flags & CollisionFlags.Sides) != 0)
