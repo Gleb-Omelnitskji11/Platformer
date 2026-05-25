@@ -42,6 +42,14 @@ public class SimpleCharacterController : MonoBehaviour, IPlayerObject
     private float _deceleration = 30f;
     [SerializeField] 
     private float _airAcceleration = 10f;
+    
+    [Header("Jump Feel")]
+    [SerializeField] 
+    private float _coyoteTime = 0.15f;
+    [SerializeField]
+    private float _jumpBufferTime = 0.15f;
+    [SerializeField] private float _fallGravityMultiplier = 4f;
+    [SerializeField] private float _lowJumpMultiplier = 2f;
 
     [Header("Ground Check")]
     [SerializeField] 
@@ -63,7 +71,11 @@ public class SimpleCharacterController : MonoBehaviour, IPlayerObject
     private bool _isWalking = false;
     private bool _isStopped = true;
     private bool _movementInputHeld = false;
+    
     private float _currentHorizontalSpeed;
+    private float _lastGroundedTime;
+    private float _lastJumpPressedTime;
+    private bool _jumpReleased = true;
     
 
     private void Start()
@@ -74,6 +86,7 @@ public class SimpleCharacterController : MonoBehaviour, IPlayerObject
     private void Update()
     {
         GroundedCheck();
+        HandleJump();
         CalculateMoveDirection();
         CheckIfStopped();
         FaceMoveDirection();
@@ -146,20 +159,44 @@ public class SimpleCharacterController : MonoBehaviour, IPlayerObject
         }
     }
 
-    private void OnJump()
+    private void OnJump(bool performed)
     {
-        if (_isGrounded)
+        if (Time.time - _lastGroundedTime <= _coyoteTime)
+        {
+            _lastJumpPressedTime = Time.time;
+            _jumpReleased = !performed;
+        }
+    }
+    
+    private void HandleJump()
+    {
+        bool canJump = Time.time - _lastGroundedTime <= _coyoteTime;
+        bool jumpBuffered = Time.time - _lastJumpPressedTime <= _jumpBufferTime;
+
+        if (canJump && jumpBuffered)
         {
             _velocity.y = _jumpForce;
+            _lastJumpPressedTime = -999f;
             _animator.SetBool(_isJumpingAnimHash, true);
         }
     }
 
     private void ApplyGravity()
     {
-        if (_velocity.y > Physics.gravity.y)
+        if (_isGrounded && _velocity.y < 0f)
         {
-            _velocity.y += Physics.gravity.y * _gravityMultiplier * Time.deltaTime;
+            _velocity.y = -2f;
+            return;
+        }
+
+        if (_velocity.y < 0)
+        {
+            _velocity.y += Physics.gravity.y * _fallGravityMultiplier * Time.deltaTime;
+        }
+        else
+        {
+            if(_jumpReleased) _velocity.y += Physics.gravity.y * _gravityMultiplier * Time.deltaTime;
+            else _velocity.y += Physics.gravity.y * _lowJumpMultiplier * Time.deltaTime;
         }
 
         if (_velocity.y <= 0f)
@@ -170,7 +207,18 @@ public class SimpleCharacterController : MonoBehaviour, IPlayerObject
 
     private void Move()
     {
-        _controller.Move(_velocity * Time.deltaTime);
+        CollisionFlags flags = _controller.Move(_velocity * Time.deltaTime);
+
+        if ((flags & CollisionFlags.Above) != 0)
+        {
+            _velocity.y = 0f;
+        }
+
+        if ((flags & CollisionFlags.Sides) != 0)
+        {
+            _velocity.x = 0f;
+            _currentHorizontalSpeed = 0f;
+        }
     }
 
     private void GroundedCheck()
@@ -181,6 +229,10 @@ public class SimpleCharacterController : MonoBehaviour, IPlayerObject
             _controller.transform.position.z
         );
         _isGrounded = Physics.CheckSphere(spherePosition, _controller.radius, _groundLayerMask, QueryTriggerInteraction.Ignore);
+        if (_isGrounded)
+        {
+            _lastGroundedTime = Time.time;
+        }
     }
 
     private void UpdateAnimator()
