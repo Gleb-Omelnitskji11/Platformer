@@ -34,6 +34,14 @@ public class SimpleCharacterController : MonoBehaviour, IPlayerObject
     private float _gravityMultiplier = 2f;
     [SerializeField] 
     private float _rotationSpeed = 10f;
+    
+    [Header("Movement Feel")]
+    [SerializeField] 
+    private float _acceleration = 20f;
+    [SerializeField] 
+    private float _deceleration = 30f;
+    [SerializeField] 
+    private float _airAcceleration = 10f;
 
     [Header("Ground Check")]
     [SerializeField] 
@@ -55,6 +63,7 @@ public class SimpleCharacterController : MonoBehaviour, IPlayerObject
     private bool _isWalking = false;
     private bool _isStopped = true;
     private bool _movementInputHeld = false;
+    private float _currentHorizontalSpeed;
     
 
     private void Start()
@@ -75,10 +84,22 @@ public class SimpleCharacterController : MonoBehaviour, IPlayerObject
 
     private void CalculateMoveDirection()
     {
-        _moveDirection = new Vector3(_inputReader._moveComposite.x, 0f, 0f);
+        int inputX = Mathf.RoundToInt(_inputReader._moveComposite.x);
+        _moveDirection = new Vector3(inputX, 0f, 0f);
         _movementInputHeld = _moveDirection.magnitude > 0.01f;
 
-        _velocity.x = _moveDirection.x * _moveSpeed;
+        float targetSpeed = _moveDirection.x * _moveSpeed;
+
+        float acceleration = _isGrounded
+            ? (_movementInputHeld ? _acceleration : _deceleration)
+            : _airAcceleration;
+
+        _currentHorizontalSpeed = Mathf.MoveTowards(
+            _currentHorizontalSpeed,
+            targetSpeed,
+            acceleration * Time.deltaTime);
+
+        _velocity.x = _currentHorizontalSpeed;
         _velocity.z = 0f;
 
         _speed2D = new Vector3(_velocity.x, 0f, _velocity.z).magnitude;
@@ -188,6 +209,7 @@ public class SimpleCharacterController : MonoBehaviour, IPlayerObject
 
         _velocity = Vector3.zero;
         _moveDirection = Vector3.zero;
+        _currentHorizontalSpeed = 0;
         _speed2D = 0f;
     }
 }
