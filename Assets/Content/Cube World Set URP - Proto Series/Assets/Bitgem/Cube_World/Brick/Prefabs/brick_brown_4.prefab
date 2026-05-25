@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 4383595747038744}
   - component: {fileID: 205047593811360688}
   - component: {fileID: 1525535564839361929}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: brick_brown_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
