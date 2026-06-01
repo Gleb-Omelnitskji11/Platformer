@@ -46,9 +46,9 @@ public class FallingPlatformObjectComponent : BasePlayerTriggerComponent
     {
         if (platformRigidbody != null)
         {
-            platformRigidbody.isKinematic = true;
             platformRigidbody.linearVelocity = Vector3.zero;
             platformRigidbody.angularVelocity = Vector3.zero;
+            platformRigidbody.isKinematic = true;
         }
 
         transform.position = initialPosition;
