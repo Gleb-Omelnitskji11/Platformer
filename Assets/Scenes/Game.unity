@@ -1020,7 +1020,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BonusObjectComponent
   _playerTag: Player
   _numberMeshPrefab: {fileID: 9098722209800167037, guid: 1555bfd90fda0864e82e7bf0a36500f9, type: 3}
-  _impulseSource: {fileID: 1374530258}
   _duration: 0.15
   _strength: 0.15
   _vibrato: 20
@@ -1249,7 +1248,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineFollow
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 1, y: 1, z: 1}
+    PositionDamping: {x: 2, y: 2, z: 1}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
