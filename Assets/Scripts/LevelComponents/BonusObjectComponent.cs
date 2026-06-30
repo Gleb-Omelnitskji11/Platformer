@@ -5,9 +5,8 @@ using UnityEngine;
 
 namespace LevelComponents
 {
-    public class BonusObjectComponent : MonoBehaviour
+    public class BonusObjectComponent : BasePlayerTriggerComponent
     {
-        [SerializeField] private string _playerTag = "Player";
         [SerializeField] private DamageNumberMesh _numberMeshPrefab;
 
 
@@ -25,23 +24,27 @@ namespace LevelComponents
             _startPosition = transform.position;
         }
 
-        private void OnCollisionEnter(Collision collision)
+        protected override void OnPlayerEnterAction(IPlayerObject playerObject)
         {
+            if (!IsPlayerHead(playerObject)) return;
+            
             if (Time.time - _lastHeadHitTime < _delay)
                 return;
+            
+            Debug.Log("+1");
+            _lastHeadHitTime = Time.time;
+            PlayBonus();
+        }
 
-            Collider other = collision.collider;
-            if (other.CompareTag(_playerTag))
+        private bool IsPlayerHead(IPlayerObject playerObject)
+        {
+            var playerPart = playerObject as PlayerPartComponent;
+            if (playerPart != null && playerPart.PartType == PartType.Head)
             {
-                if (other.TryGetComponent<PlayerPartComponent>(out PlayerPartComponent playerPart))
-                {
-                    if (playerPart.PartType == PartType.Head)
-                    {
-                        _lastHeadHitTime = Time.time;
-                        PlayBonus();
-                    }
-                }
+                return true;
             }
+
+            return false;
         }
 
         private void PlayBonus()

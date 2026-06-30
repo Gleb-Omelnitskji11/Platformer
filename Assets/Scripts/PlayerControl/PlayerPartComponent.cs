@@ -2,13 +2,15 @@ using UnityEngine;
 
 namespace PlayerControl
 {
-    public class PlayerPartComponent : MonoBehaviour
+    public class PlayerPartComponent : MonoBehaviour, IPlayerObject
     {
         [SerializeField] private PartType _partType;
-        [SerializeField] private SimpleCharacterController _characterController;
 
         public PartType PartType => _partType;
-        public SimpleCharacterController CharacterController => _characterController;
+        public void Kill()
+        {
+            
+        }
     }
 
     public enum PartType

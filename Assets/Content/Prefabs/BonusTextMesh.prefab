@@ -413,7 +413,7 @@ MonoBehaviour:
   lifetime: 2
   unscaledTime: 0
   enable3DGame: 1
-  faceCameraView: 1
+  faceCameraView: 0
   lookAtCamera: 0
   renderThroughWalls: 0
   consistentScreenSize: 0

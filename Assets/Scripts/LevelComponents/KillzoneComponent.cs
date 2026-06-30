@@ -6,7 +6,7 @@ namespace LevelComponents
     {
         protected override void OnPlayerEnterAction(IPlayerObject playerObject)
         {
-            playerObject.KillZoneEntered();
+            playerObject.Kill();
         }
     }
 }

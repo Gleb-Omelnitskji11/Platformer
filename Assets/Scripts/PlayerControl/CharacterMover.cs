@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace PlayerControl
 {
-    public class SimpleCharacterController : MonoBehaviour, IPlayerObject
+    public class CharacterMover : MonoBehaviour
     {
         private readonly int _moveSpeedHash = Animator.StringToHash("MoveSpeed");
         private readonly int _isJumpingAnimHash = Animator.StringToHash("IsJumping");
@@ -45,9 +45,6 @@ namespace PlayerControl
         [Header("Ground Check")]
         [SerializeField] private LayerMask _groundLayerMask;
         [SerializeField] private float _groundedOffset = -0.14f;
-
-        [Header("Respawn data")]
-        [SerializeField] private Vector3 _initialPosition = new Vector3(0f, 0f, 0f);
 
         private Vector3 _velocity;
         private bool _isGrounded = true;
@@ -256,17 +253,30 @@ namespace PlayerControl
             _inputReader.onJumpPerformed -= OnJump;
         }
 
-        public void KillZoneEntered()
+        public void Stop()
         {
             _controller.enabled = false;
-            transform.position = _initialPosition;
-            _controller.enabled = true;
 
             _velocity = Vector3.zero;
             _moveDirection = Vector3.zero;
             _currentHorizontalSpeed = 0;
             _speed2D = 0f;
-            
         }
+
+        public void Play()
+        {
+            _controller.enabled = true;
+        }
+        // public void KillZoneEntered()
+        // {
+        //     _controller.enabled = false;
+        //     transform.position = _initialPosition;
+        //     _controller.enabled = true;
+        //
+        //     _velocity = Vector3.zero;
+        //     _moveDirection = Vector3.zero;
+        //     _currentHorizontalSpeed = 0;
+        //     _speed2D = 0f;
+        // }
     }
 }
